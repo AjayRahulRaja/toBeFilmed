@@ -16,8 +16,8 @@ export default function Home() {
             ToBeFilmed
           </h1>
           <p className="text-2xl text-slate-300 max-w-xl drop-shadow-md font-medium leading-relaxed">
-            The open-source writing companion that helps you craft original stories,
-            visualize your scenes, and get noticed by the industry.
+            A writing companion that helps you craft original stories,
+            visualize your scenes, and get noticed by the industry—using AI to assist, not to write.
           </p>
         </div>
 
