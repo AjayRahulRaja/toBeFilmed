@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle, CheckCircle, ArrowRight, Loader2 } from "lucide-react";
 
-export default function SynopsisPage() {
+function SynopsisContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const mode = searchParams.get("mode") || "screenplay";
@@ -161,5 +161,17 @@ export default function SynopsisPage() {
                 )}
             </div>
         </main>
+    );
+}
+
+export default function SynopsisPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center bg-slate-950">
+                <Loader2 className="h-8 w-8 animate-spin text-slate-500" />
+            </div>
+        }>
+            <SynopsisContent />
+        </Suspense>
     );
 }
