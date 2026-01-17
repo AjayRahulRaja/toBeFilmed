@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { EditorPanel } from "@/components/editor-panel";
 import { VisualizationPanel } from "@/components/visualization-panel";
@@ -15,7 +15,7 @@ import { CompletionCertificate } from "@/components/completion-certificate";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { CheckCircle2, Loader2, Sparkles } from "lucide-react";
 
-export default function EditorPage() {
+function EditorContent() {
     const searchParams = useSearchParams();
     const mode = searchParams.get("mode") || "screenplay";
     const [title, setTitle] = useState("Untitled Project");
@@ -242,5 +242,17 @@ export default function EditorPage() {
                 </DialogContent>
             </Dialog>
         </main>
+    );
+}
+
+export default function EditorPage() {
+    return (
+        <Suspense fallback={
+            <div className="h-screen w-screen flex items-center justify-center bg-slate-950">
+                <Loader2 className="h-8 w-8 animate-spin text-slate-500" />
+            </div>
+        }>
+            <EditorContent />
+        </Suspense>
     );
 }
