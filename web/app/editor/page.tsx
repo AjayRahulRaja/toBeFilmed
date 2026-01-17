@@ -1,30 +1,37 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { EditorPanel } from "@/components/editor-panel";
 import { VisualizationPanel } from "@/components/visualization-panel";
 import { PitchDeck } from "@/components/pitch-deck";
 import { QueryLetter } from "@/components/query-letter";
+import { ScreenplayToolbar } from "@/components/screenplay-toolbar";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Save, Share2 } from "lucide-react";
 import Link from "next/link";
 
 import { CompletionCertificate } from "@/components/completion-certificate";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { CheckCircle2, Loader2 } from "lucide-react";
+import { CheckCircle2, Loader2, Sparkles } from "lucide-react";
 
 export default function EditorPage() {
     const searchParams = useSearchParams();
     const mode = searchParams.get("mode") || "screenplay";
     const [title, setTitle] = useState("Untitled Project");
     const [content, setContent] = useState("");
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     // Certificate State
     const [showCertificate, setShowCertificate] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [certificateData, setCertificateData] = useState<any>(null);
     const [analyzing, setAnalyzing] = useState(false);
+
+    // Scene Match State
+    const [isSceneMatchEnabled, setIsSceneMatchEnabled] = useState(false);
+    const [sceneMatch, setSceneMatch] = useState<any>(null);
+    const [debouncedContent, setDebouncedContent] = useState(content);
 
     useEffect(() => {
         const savedTitle = localStorage.getItem("project_title");
@@ -36,6 +43,66 @@ export default function EditorPage() {
             setContent(mode === "screenplay" ? `EXT. LOCATION - DAY\n\n${savedSynopsis}` : `CHAPTER 1\n\n${savedSynopsis}`);
         }
     }, []);
+
+    // Debounce content effect
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedContent(content);
+        }, 1000); // Check 1 second after typing stops
+
+        return () => clearTimeout(handler);
+    }, [content]);
+
+    // Check for matches effect
+    useEffect(() => {
+        if (!isSceneMatchEnabled || !debouncedContent || debouncedContent.length < 20) {
+            setSceneMatch(null);
+            return;
+        }
+
+        const checkMatch = async () => {
+            try {
+                // Focus slightly on the current block/paragraph (simplified: check last 500 chars)
+                // In a real app we'd parse the scene currently being edited.
+                // For this demo, let's send the whole text (or last chunk)
+                const textToCheck = debouncedContent.length > 500
+                    ? debouncedContent.slice(-500)
+                    : debouncedContent;
+
+                const res = await fetch("http://localhost:8000/api/check-scene-match", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ scene_text: textToCheck }),
+                });
+                const data = await res.json();
+                if (data.match) {
+                    setSceneMatch(data.match);
+                } else {
+                    setSceneMatch(null);
+                }
+            } catch (error) {
+                console.error("Scene match check failed:", error);
+            }
+        };
+
+        checkMatch();
+    }, [debouncedContent, isSceneMatchEnabled]);
+
+    const handleInsertFormat = (formatText: string) => {
+        const textarea = document.querySelector('textarea');
+        if (!textarea) return;
+
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const newContent = content.substring(0, start) + formatText + content.substring(end);
+        setContent(newContent);
+
+        // Set cursor position after inserted text
+        setTimeout(() => {
+            textarea.focus();
+            textarea.setSelectionRange(start + formatText.length, start + formatText.length);
+        }, 0);
+    };
 
     const handleCompleteClick = () => {
         if (!content) return;
@@ -102,15 +169,50 @@ export default function EditorPage() {
             </header>
 
             {/* Main Content Area */}
-            <div className="flex-1 flex overflow-hidden">
-                {/* Left: Editor */}
-                <div className="flex-1 border-r border-slate-800 overflow-y-auto">
-                    <EditorPanel mode={mode} content={content} onChange={setContent} />
-                </div>
+            <div className="flex-1 flex flex-col overflow-hidden">
+                {/* Screenplay Toolbar - Only in screenplay mode */}
+                {mode === "screenplay" && (
+                    <ScreenplayToolbar
+                        onInsert={handleInsertFormat}
+                        isMatchEnabled={isSceneMatchEnabled}
+                        onToggleMatch={() => setIsSceneMatchEnabled(!isSceneMatchEnabled)}
+                    />
+                )}
 
-                {/* Right: Visualization */}
-                <div className="w-[400px] bg-slate-900/30 overflow-y-auto border-l border-slate-800">
-                    <VisualizationPanel />
+                <div className="flex-1 flex overflow-hidden">
+                    {/* Left: Editor */}
+                    <div className="flex-1 border-r border-slate-800 overflow-y-auto relative">
+                        {isSceneMatchEnabled && sceneMatch && (
+                            <div className="absolute top-4 right-4 z-10 w-80 bg-slate-900 border border-purple-500/50 rounded-lg p-4 shadow-2xl shadow-purple-900/20 backdrop-blur-md">
+                                <div className="flex items-start justify-between mb-2">
+                                    <h3 className="text-sm font-semibold text-purple-400 flex items-center gap-2">
+                                        <Sparkles className="h-4 w-4" />
+                                        Existing Scene Detected
+                                    </h3>
+                                    <span className="text-xs font-bold bg-purple-900/50 text-purple-300 px-2 py-0.5 rounded-full border border-purple-500/30">
+                                        {sceneMatch.match_score}% Match
+                                    </span>
+                                </div>
+                                <div className="space-y-2 text-sm text-slate-300">
+                                    <p><span className="text-slate-500">Film:</span> <span className="font-medium text-white">{sceneMatch.film} ({sceneMatch.year})</span></p>
+                                    <p><span className="text-slate-500">Director:</span> {sceneMatch.director}</p>
+                                    <p><span className="text-slate-500">Runtime:</span> {sceneMatch.runtime}</p>
+                                    <p><span className="text-slate-500">Timestamp:</span> <span className="font-mono text-xs bg-slate-800 px-1 py-0.5 rounded">{sceneMatch.scene_timestamp}</span></p>
+                                    <p><span className="text-slate-500">Language:</span> {sceneMatch.language || "English"}</p>
+
+                                    <div className="mt-3 pt-3 border-t border-slate-800 text-xs italic text-slate-500 line-clamp-3">
+                                        "{sceneMatch.text}"
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        <EditorPanel mode={mode} content={content} onChange={setContent} />
+                    </div>
+
+                    {/* Right: Visualization */}
+                    <div className="w-[400px] bg-slate-900/30 overflow-y-auto border-l border-slate-800">
+                        <VisualizationPanel />
+                    </div>
                 </div>
             </div>
 

@@ -16,6 +16,7 @@ from services.tmdb import search_movies
 from services.similarity import check_originality
 from services.generator import generate_storyboard, generate_video, generate_query_letter
 from services.analyzer import analyze_script
+from services.scene_matcher import find_matching_scene
 
 class SynopsisRequest(BaseModel):
     title: str
@@ -66,4 +67,9 @@ def api_analyze_script(request: SceneRequest):
     # Re-using SceneRequest {scene_text: str} for full script text to simplify
     data = analyze_script(request.scene_text)
     return data
+
+@app.post("/api/check-scene-match")
+def api_check_scene_match(request: SceneRequest):
+    match = find_matching_scene(request.scene_text)
+    return {"match": match}
 

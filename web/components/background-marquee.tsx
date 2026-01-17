@@ -22,46 +22,39 @@ const BACKDROP_PATHS = [
     "/kXfqcdQKs0RzPTGXm8PzQ5Jo6HQ.jpg", // Shawshank Redemption
     "/vK5KaX0bLz43oDk1m5B0D701r6H.jpg", // LOTR: Return of the King
     "/qlfSgE7N9h91B49oV9RjS90D1r3.jpg", // Forrest Gump
-    "/2p8vN16xH6j3o5s6w7L7z7h7j7k.jpg", // Star Wars: A New Hope
+    "/jOzrELAzFxtMx2I4uDGHOotdfsS.jpg", // Star Wars: A New Hope
     "/e5Vvx8xys2NuFhl8fevXt41wX7v.jpg", // Schindler's List
-    "/xHrpMy0I3A.jpg", // Parasite (Alt)
-    "/gL915zE.jpg", // Seven Samurai
-    "/5GZ6M5.jpg", // Singin' in the Rain
-    "/qZ0oM4gWd2.jpg", // Wizard of Oz
-    "/A3H4gB.jpg", // Casablanca
-    "/tyJbQe.jpg", // Gladiator
-    "/r8oX7bL.jpg", // Fight Club (Alt)
-    "/x4R7kE.jpg", // Goodfellas
-    "/zxfqR2v.jpg", // Interstellar (Alt)
-    "/wHqWb8.jpg", // Spirited Away (Alt)
-    "/pZ48a8.jpg", // Eternal Sunshine
-    "/sL3Nn0x.jpg", // Back to the Future
-    "/eN8uJ7.jpg", // Raiders of the Lost Ark
-    "/85lJ7e.jpg", // Alien
-    "/qGqD0L.jpg", // The Shining
-    "/u4zT9f.jpg", // Blade Runner
-    "/nS031V.jpg", // ET
-    "/bL6iG9.jpg", // Jurassic Park
-    "/wM02g0.jpg", // Titanic
-    "/x40p6t.jpg", // Saving Private Ryan
-    "/s49m21.jpg", // LOTR: Fellowship (Alt)
-    "/w6R9u1.jpg", // LOTR: Two Towers
-    "/fM4f0v.jpg", // Apocalypse Now
-    "/e8rX4u.jpg", // Inglourious Basterds
-    "/aCuy0y.jpg", // Avatar
-    "/zV0V2G.jpg", // Django Unchained
-    "/aGg2C0.jpg", // Grand Budapest (Alt)
-    "/u1s1Nf.jpg", // Get Out
-    "/aP69c4.jpg", // Dune
-    "/fPFrv.jpg", // Oppenheimer
-    "/qP6E6l.jpg", // Psycho
-    "/oT1VfL.jpg", // 2001
-    "/o1s0l7.jpg", // Whiplash
-    "/r3tM7c.jpg", // Mad Max Fury Road
-    "/qW337s.jpg", // La La Land (Alt)
-    "/fD4pG1.jpg", // Arrival
-    "/q1y5N4.jpg", // Joker
-    "/fF64K8.jpg", // Spider-Verse
+    "/hziKb0K7QnLPeqYGC2Q1q9UqFL5.jpg", // Avengers Endgame
+    "/2Fk3AB8E9dYIBc2ywJkxk8BTyhc.jpg", // Mad Max Fury Road
+    "/lmZFxXgJE3vgrciwuDib0N8CfQo.jpg", // The Godfather Part II
+    "/qdIMHd4sEfJSckfVJfKQvisL02a.jpg", // 12 Angry Men
+    "/vI3aUGTuRRdM7J78KIdW98LdxE5.jpg", // The Dark Knight Rises
+    "/poec6RqOKY9iSiIUmfyfPfiLtvB.jpg", // Harry Potter
+    "/rhIRbceoE9lR4veEXuwCC2wARtG.jpg", // LOTR: Two Towers
+    "/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg", // Inglourious Basterds
+    "/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg", // Interstellar (Alt)
+    "/90ez6ArvpO8bvpyIngBuwXOqJm5.jpg", // Whiplash
+    "/ctOEhQiFIHWkiaYp7b0ibSTe5IL.jpg", // Joker
+    "/8ZTVKSpN2iUkbg1JF6HiXF4d8n0.jpg", // Gladiator
+    "/ilKFhqnwvyoW8vE6H32mM0iASYv.jpg", // Good Will Hunting
+    "/rr7E0NoH7J5B6laq2SAgD5qQgSM.jpg", // Avatar
+    "/78lPtwv72eTNqFW9COBYI0dWDJa.jpg", // Dune
+    "/kuf6dutpsT0vSVehic3EZIqkOBt.jpg", // Oppenheimer
+    "/dIWwZW7dJJtqC6CgWzYkNVKIUm8.jpg", // LOTR: Fellowship (Alt)
+    "/bQXAqRx2Fgc46uCVWgoPQP2gH7m.jpg", // The Shawshank Redemption (Alt)
+    "/6MKr3KgOLmzOP6MSuZERO41Lpkt.jpg", // The Matrix Reloaded
+    "/lJhSbR3IzRW9LxE0JkVv7NmEsLl.jpg", // Fight Club (Alt)
+    "/fCayJrkfRaCRCTh8GqN30f8oyQL.jpg", // Pulp Fiction (Alt)
+    "/eShw0LB5CkoEfYtpxOfTLa4JOY9.jpg", // The Silence of the Lambs
+    "/3bhkrj58Vtu7enYsRolD1fZdja1.jpg", // Saving Private Ryan
+    "/kXfqpcdQKs0RzPTGXm8PzQ5Jo6H.jpg", // Goodfellas
+    "/hiKmpZMGZsrkA3cdce8a7Dpos1j.jpg", // Forrest Gump (Alt)
+    "/bHarw8xrmQeqf3t8HpuMY7zoK4x.jpg", // Back to the Future
+    "/gzlJkVfWV5VEG5xK25cvFGJgWAc.jpg", // Jurassic Park  
+    "/wkT5a8orDCZrvPqbQXY8pOEZrF0.jpg", // E.T.
+    "/qdBShVcsdWJAJXJlCeNP90fWqZD.jpg", // Casablanca
+    "/mSDsSDwaP3E7dEfUPWy4J0djt4O.jpg", // The Green Mile
+    "/qW337sxk3fmBFH2fLdSdW47LTGS.jpg", // La La Land (Alt)
 ];
 
 // Fisher-Yates shuffle
@@ -88,12 +81,11 @@ export function BackgroundMarquee() {
         const chunk2 = shuffledMaster.slice(chunkSize, chunkSize * 2);
         const chunk3 = shuffledMaster.slice(chunkSize * 2);
 
-        // 3. For each column, create a looping array ensuring no immediate repeats
-        // shuffling again before duplicating helps add more "randomness" to the vertical sequence
+        // 3. Duplicate each chunk for infinite scroll (no cross-column repeats)
         setColumns([
-            [...chunk1, ...shuffle([...chunk1])],
-            [...chunk2, ...shuffle([...chunk2])],
-            [...chunk3, ...shuffle([...chunk3])]
+            [...chunk1, ...chunk1],
+            [...chunk2, ...chunk2],
+            [...chunk3, ...chunk3]
         ]);
     }, []);
 
