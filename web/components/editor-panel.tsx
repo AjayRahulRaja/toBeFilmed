@@ -85,60 +85,58 @@ export function EditorPanel({ mode, content, onChange }: EditorPanelProps) {
         if (!isScreenplay) return null;
 
         return (
-            <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ padding: '1rem 2rem' }}>
-                <div className="max-w-3xl mx-auto">
-                    <div className="whitespace-pre-wrap font-mono" style={{ lineHeight: '1.5rem', fontSize: '16px' }}>
-                        {content.split('\n').map((line, idx) => {
-                            const trimmed = line.trim();
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                <div className="whitespace-pre-wrap font-mono" style={{ lineHeight: '1.5rem', fontSize: '16px' }}>
+                    {content.split('\n').map((line, idx) => {
+                        const trimmed = line.trim();
 
-                            // Character names (@)
-                            if (line.startsWith('@')) {
-                                return <div key={idx} className="text-center font-bold text-slate-100">{line.substring(1) || '\u00A0'}</div>;
-                            }
-                            // Dialogue ($)
-                            if (line.startsWith('$')) {
-                                return <div key={idx} className="ml-24 max-w-md text-slate-200">{line.substring(1) || '\u00A0'}</div>;
-                            }
-                            // Parentheticals
-                            if (trimmed.startsWith('(') && trimmed.endsWith(')')) {
-                                return <div key={idx} className="ml-20 text-slate-300">{line || '\u00A0'}</div>;
-                            }
-                            // Transitions (>)
-                            if (line.startsWith('>')) {
-                                return <div key={idx} className="text-right font-bold text-slate-100">{line.substring(1) || '\u00A0'}</div>;
-                            }
-                            // Shots (#)
-                            if (line.startsWith('#')) {
-                                return <div key={idx} className="ml-8 font-bold text-slate-200">{line.substring(1) || '\u00A0'}</div>;
-                            }
-                            // Music (~)
-                            if (line.startsWith('~')) {
-                                return <div key={idx} className="text-center italic text-slate-200">{line.substring(1) || '\u00A0'}</div>;
-                            }
-                            // Montage (%)
-                            if (line.startsWith('%')) {
-                                return <div key={idx} className="text-center font-bold uppercase text-slate-100">{line.substring(1) || '\u00A0'}</div>;
-                            }
-                            // Flashback (&)
-                            if (line.startsWith('&')) {
-                                return <div key={idx} className="font-bold italic text-slate-200">{line.substring(1) || '\u00A0'}</div>;
-                            }
-                            // Notes
-                            if (line.startsWith('[[') && line.endsWith(']]')) {
-                                return <div key={idx} className="text-amber-400 italic text-sm">{line || '\u00A0'}</div>;
-                            }
-                            // Page breaks
-                            if (line.startsWith('===')) {
-                                return <div key={idx} className="border-t-2 border-slate-600 my-2 text-center text-xs text-slate-500">{line.replace(/=/g, '') || '\u00A0'}</div>;
-                            }
-                            // Scene headings (ALL CAPS)
-                            if (line === line.toUpperCase() && line.trim().length > 0 && !line.startsWith('(')) {
-                                return <div key={idx} className="font-bold text-slate-100">{line || '\u00A0'}</div>;
-                            }
-                            // Regular action lines
-                            return <div key={idx} className="text-slate-300">{line || '\u00A0'}</div>;
-                        })}
-                    </div>
+                        // Character names (@)
+                        if (line.startsWith('@')) {
+                            return <div key={idx} className="text-center font-bold text-slate-100">{line.substring(1) || '\u00A0'}</div>;
+                        }
+                        // Dialogue ($)
+                        if (line.startsWith('$')) {
+                            return <div key={idx} className="ml-24 max-w-md text-slate-200">{line.substring(1) || '\u00A0'}</div>;
+                        }
+                        // Parentheticals
+                        if (trimmed.startsWith('(') && trimmed.endsWith(')')) {
+                            return <div key={idx} className="ml-20 text-slate-300">{line || '\u00A0'}</div>;
+                        }
+                        // Transitions (>)
+                        if (line.startsWith('>')) {
+                            return <div key={idx} className="text-right font-bold text-slate-100">{line.substring(1) || '\u00A0'}</div>;
+                        }
+                        // Shots (#)
+                        if (line.startsWith('#')) {
+                            return <div key={idx} className="ml-8 font-bold text-slate-200">{line.substring(1) || '\u00A0'}</div>;
+                        }
+                        // Music (~)
+                        if (line.startsWith('~')) {
+                            return <div key={idx} className="text-center italic text-slate-200">{line.substring(1) || '\u00A0'}</div>;
+                        }
+                        // Montage (%)
+                        if (line.startsWith('%')) {
+                            return <div key={idx} className="text-center font-bold uppercase text-slate-100">{line.substring(1) || '\u00A0'}</div>;
+                        }
+                        // Flashback (&)
+                        if (line.startsWith('&')) {
+                            return <div key={idx} className="font-bold italic text-slate-200">{line.substring(1) || '\u00A0'}</div>;
+                        }
+                        // Notes
+                        if (line.startsWith('[[') && line.endsWith(']]')) {
+                            return <div key={idx} className="text-amber-400 italic text-sm">{line || '\u00A0'}</div>;
+                        }
+                        // Page breaks
+                        if (line.startsWith('===')) {
+                            return <div key={idx} className="border-t-2 border-slate-600 my-2 text-center text-xs text-slate-500">{line.replace(/=/g, '') || '\u00A0'}</div>;
+                        }
+                        // Scene headings (ALL CAPS)
+                        if (line === line.toUpperCase() && line.trim().length > 0 && !line.startsWith('(')) {
+                            return <div key={idx} className="font-bold text-slate-100">{line || '\u00A0'}</div>;
+                        }
+                        // Regular action lines
+                        return <div key={idx} className="text-slate-300">{line || '\u00A0'}</div>;
+                    })}
                 </div>
             </div>
         );
@@ -146,21 +144,22 @@ export function EditorPanel({ mode, content, onChange }: EditorPanelProps) {
 
     if (isScreenplay) {
         return (
-            <div className="h-full relative">
-                <Textarea
-                    className="w-full h-full min-h-[80vh] resize-none bg-transparent border-none focus-visible:ring-0 font-mono text-transparent caret-slate-400 relative z-10"
-                    style={{
-                        lineHeight: '1.5rem',
-                        fontSize: '16px',
-                        padding: '1rem 2rem'
-                    }}
-                    placeholder=""
-                    value={content}
-                    onChange={(e) => onChange(e.target.value)}
-                    onKeyDown={handleScreenplayKeyDown}
-                    spellCheck={true}
-                />
-                {renderFormattedOverlay()}
+            <div className="h-full px-8 py-4 overflow-y-auto">
+                <div className="max-w-3xl mx-auto relative">
+                    <Textarea
+                        className="w-full min-h-[80vh] resize-none bg-transparent border-none focus-visible:ring-0 font-mono text-transparent caret-slate-400 relative z-10 p-0"
+                        style={{
+                            lineHeight: '1.5rem',
+                            fontSize: '16px'
+                        }}
+                        placeholder=""
+                        value={content}
+                        onChange={(e) => onChange(e.target.value)}
+                        onKeyDown={handleScreenplayKeyDown}
+                        spellCheck={true}
+                    />
+                    {renderFormattedOverlay()}
+                </div>
             </div>
         );
     }
