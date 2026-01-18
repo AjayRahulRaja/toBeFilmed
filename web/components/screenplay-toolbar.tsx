@@ -32,7 +32,7 @@ export function ScreenplayToolbar({ onInsert, isMatchEnabled, onToggleMatch }: S
         { label: "Action", icon: Film, value: "\n\n" },
         { label: "Character", icon: User, value: "\n\n@" }, // @ for center
         { label: "Dialogue", icon: MessageSquare, value: "$" }, // $ for dialogue (indented)
-        { label: "Parenthetical", icon: Type, value: "(" }, // Parenthetical
+        { label: "Parenthetical", icon: Type, value: "()" }, // Parenthetical
         { label: "Transition", icon: ArrowRight, value: "\n\n>" }, // > for right-align
         { label: "Shot", icon: Camera, value: "\n\n#" }, // # for shot
         { label: "Dual Dialogue", icon: Users, value: "\n\n@          @\n" },

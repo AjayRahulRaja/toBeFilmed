@@ -95,9 +95,14 @@ function EditorContent() {
         setContent(newContent);
 
         // Set cursor position after inserted text
+        // Special case: for "()", put cursor inside the parentheses  
         setTimeout(() => {
             textarea.focus();
-            textarea.setSelectionRange(start + formatText.length, start + formatText.length);
+            if (formatText === "()") {
+                textarea.setSelectionRange(start + 1, start + 1);
+            } else {
+                textarea.setSelectionRange(start + formatText.length, start + formatText.length);
+            }
         }, 0);
     };
 

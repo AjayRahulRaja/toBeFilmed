@@ -22,8 +22,6 @@ export function EditorPanel({ mode, content, onChange }: EditorPanelProps) {
             const currentLine = lines[lines.length - 1];
             const trimmed = currentLine.trim();
 
-            // Detect current line type and auto-insert next appropriate element
-
             // After Scene Heading (ALL CAPS) -> Action (blank line)
             if (currentLine === currentLine.toUpperCase() && trimmed.length > 0 && !currentLine.startsWith('@') && !currentLine.startsWith('$') && !currentLine.startsWith('>') && !currentLine.startsWith('#') && !currentLine.startsWith('~') && !currentLine.startsWith('%') && !currentLine.startsWith('&')) {
                 e.preventDefault();
@@ -31,17 +29,6 @@ export function EditorPanel({ mode, content, onChange }: EditorPanelProps) {
                 onChange(newContent);
                 setTimeout(() => {
                     textarea.selectionStart = textarea.selectionEnd = cursorPos + 2;
-                }, 0);
-                return;
-            }
-
-            // After Action (regular text) -> Character (@)
-            if (!currentLine.startsWith('@') && !currentLine.startsWith('$') && !currentLine.startsWith('>') && !currentLine.startsWith('#') && !currentLine.startsWith('~') && !currentLine.startsWith('%') && !currentLine.startsWith('&') && trimmed.length > 0 && currentLine !== currentLine.toUpperCase()) {
-                e.preventDefault();
-                const newContent = content.substring(0, cursorPos) + '\n\n@' + content.substring(cursorPos);
-                onChange(newContent);
-                setTimeout(() => {
-                    textarea.selectionStart = textarea.selectionEnd = cursorPos + 3;
                 }, 0);
                 return;
             }
@@ -57,18 +44,18 @@ export function EditorPanel({ mode, content, onChange }: EditorPanelProps) {
                 return;
             }
 
-            // After Dialogue ($) -> Character (@) for next speaker
+            // After Dialogue ($) -> Keep Dialogue ($)
             if (currentLine.trim().startsWith('$')) {
                 e.preventDefault();
-                const newContent = content.substring(0, cursorPos) + '\n\n@' + content.substring(cursorPos);
+                const newContent = content.substring(0, cursorPos) + '\n$' + content.substring(cursorPos);
                 onChange(newContent);
                 setTimeout(() => {
-                    textarea.selectionStart = textarea.selectionEnd = cursorPos + 3;
+                    textarea.selectionStart = textarea.selectionEnd = cursorPos + 2;
                 }, 0);
                 return;
             }
 
-            // After Transition (>) -> Scene Heading
+            // After Transition (>) -> Scene Heading (blank line)
             if (currentLine.trim().startsWith('>')) {
                 e.preventDefault();
                 const newContent = content.substring(0, cursorPos) + '\n\n' + content.substring(cursorPos);
@@ -78,6 +65,9 @@ export function EditorPanel({ mode, content, onChange }: EditorPanelProps) {
                 }, 0);
                 return;
             }
+
+            // Default: Action stays Action (regular text stays regular text)
+            // Just let Enter work normally
         }
     };
 
@@ -86,7 +76,15 @@ export function EditorPanel({ mode, content, onChange }: EditorPanelProps) {
 
         return (
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                <div className="whitespace-pre-wrap font-mono" style={{ lineHeight: '1.5rem', fontSize: '16px' }}>
+                <div
+                    className="whitespace-pre-wrap font-mono"
+                    style={{
+                        fontSize: '16px',
+                        lineHeight: '24px',
+                        padding: '0',
+                        margin: '0'
+                    }}
+                >
                     {content.split('\n').map((line, idx) => {
                         const trimmed = line.trim();
 
@@ -146,11 +144,15 @@ export function EditorPanel({ mode, content, onChange }: EditorPanelProps) {
         return (
             <div className="h-full px-8 py-4 overflow-y-auto">
                 <div className="max-w-3xl mx-auto relative">
-                    <Textarea
-                        className="w-full min-h-[80vh] resize-none bg-transparent border-none focus-visible:ring-0 font-mono text-transparent caret-slate-400 relative z-10 p-0"
+                    <textarea
+                        className="w-full min-h-[80vh] resize-none bg-transparent border-none focus:outline-none font-mono text-transparent caret-slate-400 relative z-10"
                         style={{
-                            lineHeight: '1.5rem',
-                            fontSize: '16px'
+                            fontSize: '16px',
+                            lineHeight: '24px',
+                            padding: '0',
+                            margin: '0',
+                            border: 'none',
+                            outline: 'none'
                         }}
                         placeholder=""
                         value={content}
