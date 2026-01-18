@@ -35,13 +35,10 @@ function EditorContent() {
 
     useEffect(() => {
         const savedTitle = localStorage.getItem("project_title");
-        const savedSynopsis = localStorage.getItem("project_synopsis");
         if (savedTitle) setTitle(savedTitle);
 
-        // Initialize content if empty
-        if (!content && savedSynopsis) {
-            setContent(mode === "screenplay" ? `EXT. LOCATION - DAY\n\n${savedSynopsis}` : `CHAPTER 1\n\n${savedSynopsis}`);
-        }
+        // Always start with empty content as requested
+        setContent("");
     }, []);
 
     // Debounce content effect

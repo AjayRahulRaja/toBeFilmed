@@ -20,8 +20,33 @@ export function EditorPanel({ mode, content, onChange }: EditorPanelProps) {
             const textBeforeCursor = content.substring(0, cursorPos);
             const lines = textBeforeCursor.split('\n');
             const currentLine = lines[lines.length - 1];
+            const trimmed = currentLine.trim();
 
-            // After character name (@), auto-insert dialogue ($)
+            // Detect current line type and auto-insert next appropriate element
+
+            // After Scene Heading (ALL CAPS) -> Action (blank line)
+            if (currentLine === currentLine.toUpperCase() && trimmed.length > 0 && !currentLine.startsWith('@') && !currentLine.startsWith('$') && !currentLine.startsWith('>') && !currentLine.startsWith('#') && !currentLine.startsWith('~') && !currentLine.startsWith('%') && !currentLine.startsWith('&')) {
+                e.preventDefault();
+                const newContent = content.substring(0, cursorPos) + '\n\n' + content.substring(cursorPos);
+                onChange(newContent);
+                setTimeout(() => {
+                    textarea.selectionStart = textarea.selectionEnd = cursorPos + 2;
+                }, 0);
+                return;
+            }
+
+            // After Action (regular text) -> Character (@)
+            if (!currentLine.startsWith('@') && !currentLine.startsWith('$') && !currentLine.startsWith('>') && !currentLine.startsWith('#') && !currentLine.startsWith('~') && !currentLine.startsWith('%') && !currentLine.startsWith('&') && trimmed.length > 0 && currentLine !== currentLine.toUpperCase()) {
+                e.preventDefault();
+                const newContent = content.substring(0, cursorPos) + '\n\n@' + content.substring(cursorPos);
+                onChange(newContent);
+                setTimeout(() => {
+                    textarea.selectionStart = textarea.selectionEnd = cursorPos + 3;
+                }, 0);
+                return;
+            }
+
+            // After Character (@) -> Dialogue ($)
             if (currentLine.trim().startsWith('@')) {
                 e.preventDefault();
                 const newContent = content.substring(0, cursorPos) + '\n$' + content.substring(cursorPos);
@@ -32,21 +57,21 @@ export function EditorPanel({ mode, content, onChange }: EditorPanelProps) {
                 return;
             }
 
-            // After transition (>), auto-insert scene heading
-            if (currentLine.trim().startsWith('>')) {
+            // After Dialogue ($) -> Character (@) for next speaker
+            if (currentLine.trim().startsWith('$')) {
                 e.preventDefault();
-                const newContent = content.substring(0, cursorPos) + '\n\nINT. ' + content.substring(cursorPos);
+                const newContent = content.substring(0, cursorPos) + '\n\n@' + content.substring(cursorPos);
                 onChange(newContent);
                 setTimeout(() => {
-                    textarea.selectionStart = textarea.selectionEnd = cursorPos + 7;
+                    textarea.selectionStart = textarea.selectionEnd = cursorPos + 3;
                 }, 0);
                 return;
             }
 
-            // After dialogue ($), stay in dialogue mode
-            if (currentLine.trim().startsWith('$')) {
+            // After Transition (>) -> Scene Heading
+            if (currentLine.trim().startsWith('>')) {
                 e.preventDefault();
-                const newContent = content.substring(0, cursorPos) + '\n$' + content.substring(cursorPos);
+                const newContent = content.substring(0, cursorPos) + '\n\n' + content.substring(cursorPos);
                 onChange(newContent);
                 setTimeout(() => {
                     textarea.selectionStart = textarea.selectionEnd = cursorPos + 2;
@@ -60,9 +85,9 @@ export function EditorPanel({ mode, content, onChange }: EditorPanelProps) {
         if (!isScreenplay) return null;
 
         return (
-            <div className="absolute inset-0 pointer-events-none overflow-hidden px-8 py-4">
+            <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ padding: '1rem 2rem' }}>
                 <div className="max-w-3xl mx-auto">
-                    <div className="whitespace-pre-wrap text-base font-mono" style={{ lineHeight: '1.5rem' }}>
+                    <div className="whitespace-pre-wrap font-mono" style={{ lineHeight: '1.5rem', fontSize: '16px' }}>
                         {content.split('\n').map((line, idx) => {
                             const trimmed = line.trim();
 
@@ -121,10 +146,14 @@ export function EditorPanel({ mode, content, onChange }: EditorPanelProps) {
 
     if (isScreenplay) {
         return (
-            <div className="h-full px-8 py-4 max-w-3xl mx-auto relative">
+            <div className="h-full relative">
                 <Textarea
-                    className="w-full h-full min-h-[80vh] resize-none bg-transparent border-none focus-visible:ring-0 text-base md:text-base font-mono text-transparent caret-slate-400 relative z-10 p-0"
-                    style={{ lineHeight: '1.5rem' }}
+                    className="w-full h-full min-h-[80vh] resize-none bg-transparent border-none focus-visible:ring-0 font-mono text-transparent caret-slate-400 relative z-10"
+                    style={{
+                        lineHeight: '1.5rem',
+                        fontSize: '16px',
+                        padding: '1rem 2rem'
+                    }}
                     placeholder=""
                     value={content}
                     onChange={(e) => onChange(e.target.value)}
