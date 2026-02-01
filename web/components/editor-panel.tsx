@@ -1,7 +1,7 @@
 "use client";
 
 import { Textarea } from "@/components/ui/textarea";
-import { KeyboardEvent, useEffect } from "react";
+import { KeyboardEvent, useEffect, useState, useRef, useMemo } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import TextAlign from "@tiptap/extension-text-align";
@@ -17,6 +17,8 @@ interface EditorPanelProps {
 export function EditorPanel({ mode, content, onChange }: EditorPanelProps) {
     const isNovel = mode === "novel";
     const isScreenplay = mode === "screenplay";
+    const [cursorPos, setCursorPos] = useState(0);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     // Tiptap editor for Novel mode
     const editor = useEditor({
@@ -46,6 +48,88 @@ export function EditorPanel({ mode, content, onChange }: EditorPanelProps) {
         }
     }, [content, editor, isNovel]);
 
+    // Calculate dynamic style for the textarea based on the current line
+    const dynamicStyle = useMemo(() => {
+        if (!isScreenplay) return {};
+
+        const textBeforeCursor = content.substring(0, cursorPos);
+        const lines = textBeforeCursor.split('\n');
+        const currentLine = lines[lines.length - 1];
+        const trimmed = currentLine.trim();
+
+        // Locked font metrics to ensure zero drift
+        const baseStyle = {
+            textAlign: 'left' as const,
+            paddingLeft: '0px',
+            paddingRight: '0px',
+            width: '100%',
+            transform: 'none',
+            letterSpacing: '0px',
+            fontFeatureSettings: '"tnum" 1',
+            fontVariantNumeric: 'tabular-nums' as const,
+            WebkitFontSmoothing: 'antialiased' as const,
+            MozOsxFontSmoothing: 'grayscale' as const,
+            fontFamily: '"Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+        };
+
+        // Character (@) -> Centered, shift left by 0.5ch to account for hidden @
+        if (currentLine.startsWith('@')) {
+            return {
+                ...baseStyle,
+                textAlign: 'center' as const,
+                transform: 'translateX(-0.5ch)'
+            };
+        }
+
+        // Dialogue ($) -> Indentation: 96px (6rem). 
+        // Compensation: Shift padding-left by -1ch to align text start after stripping $
+        if (currentLine.startsWith('$')) {
+            return {
+                ...baseStyle,
+                paddingLeft: 'calc(96px - 1ch)',
+                paddingRight: 'calc(100% - 96px - 448px)', // Sync with ml-24 (96px) and max-w-md (448px)
+            };
+        }
+
+        // Parenthetical -> Indentation: 80px (5rem). No prefix stripped.
+        if (trimmed.startsWith('(') && trimmed.endsWith(')')) {
+            return {
+                ...baseStyle,
+                paddingLeft: '80px',
+                paddingRight: '80px',
+            };
+        }
+
+        // Music (~) -> Centered, shift left by 0.5ch
+        if (currentLine.startsWith('~')) {
+            return {
+                ...baseStyle,
+                textAlign: 'center' as const,
+                transform: 'translateX(-0.5ch)'
+            };
+        }
+
+        // Transitions (>) -> Right, shift right by 1ch to stay at margin
+        if (currentLine.startsWith('>')) {
+            return {
+                ...baseStyle,
+                textAlign: 'right' as const,
+                transform: 'translateX(1ch)'
+            };
+        }
+
+        // Montage (%) -> Centered, shift left by 0.5ch
+        if (currentLine.startsWith('%')) {
+            return {
+                ...baseStyle,
+                textAlign: 'center' as const,
+                transform: 'translateX(-0.5ch)'
+            };
+        }
+
+        return baseStyle;
+    }, [content, cursorPos, isScreenplay]);
+
     const handleScreenplayKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === "Enter" && !e.shiftKey) {
             const textarea = e.currentTarget;
@@ -62,6 +146,7 @@ export function EditorPanel({ mode, content, onChange }: EditorPanelProps) {
                 onChange(newContent);
                 setTimeout(() => {
                     textarea.selectionStart = textarea.selectionEnd = cursorPos + 2;
+                    setCursorPos(cursorPos + 2);
                 }, 0);
                 return;
             }
@@ -73,6 +158,7 @@ export function EditorPanel({ mode, content, onChange }: EditorPanelProps) {
                 onChange(newContent);
                 setTimeout(() => {
                     textarea.selectionStart = textarea.selectionEnd = cursorPos + 2;
+                    setCursorPos(cursorPos + 2);
                 }, 0);
                 return;
             }
@@ -86,6 +172,7 @@ export function EditorPanel({ mode, content, onChange }: EditorPanelProps) {
                     onChange(newContent);
                     setTimeout(() => {
                         textarea.selectionStart = textarea.selectionEnd = cursorPos + 2;
+                        setCursorPos(cursorPos + 2);
                     }, 0);
                 } else {
                     // Continue with dialogue
@@ -93,6 +180,7 @@ export function EditorPanel({ mode, content, onChange }: EditorPanelProps) {
                     onChange(newContent);
                     setTimeout(() => {
                         textarea.selectionStart = textarea.selectionEnd = cursorPos + 2;
+                        setCursorPos(cursorPos + 2);
                     }, 0);
                 }
                 return;
@@ -105,6 +193,7 @@ export function EditorPanel({ mode, content, onChange }: EditorPanelProps) {
                 onChange(newContent);
                 setTimeout(() => {
                     textarea.selectionStart = textarea.selectionEnd = cursorPos + 2;
+                    setCursorPos(cursorPos + 2);
                 }, 0);
                 return;
             }
@@ -116,12 +205,15 @@ export function EditorPanel({ mode, content, onChange }: EditorPanelProps) {
                 onChange(newContent);
                 setTimeout(() => {
                     textarea.selectionStart = textarea.selectionEnd = cursorPos + 2;
+                    setCursorPos(cursorPos + 2);
                 }, 0);
                 return;
             }
 
-            // Default: Action stays Action (regular text stays regular text)
-            // Just let Enter work normally
+            // Normal enter updates cursor pos too
+            setTimeout(() => {
+                setCursorPos(textarea.selectionStart);
+            }, 0);
         }
     };
 
@@ -131,12 +223,18 @@ export function EditorPanel({ mode, content, onChange }: EditorPanelProps) {
         return (
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
                 <div
-                    className="whitespace-pre-wrap font-mono"
+                    className="whitespace-pre-wrap"
                     style={{
                         fontSize: '16px',
                         lineHeight: '24px',
                         padding: '0',
-                        margin: '0'
+                        margin: '0',
+                        letterSpacing: '0px',
+                        fontFeatureSettings: '"tnum" 1',
+                        fontVariantNumeric: 'tabular-nums',
+                        WebkitFontSmoothing: 'antialiased',
+                        MozOsxFontSmoothing: 'grayscale',
+                        fontFamily: '"Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
                     }}
                 >
                     {content.split('\n').map((line, idx) => {
@@ -196,21 +294,30 @@ export function EditorPanel({ mode, content, onChange }: EditorPanelProps) {
 
     if (isScreenplay) {
         return (
-            <div className="h-full px-8 py-4 overflow-y-auto">
-                <div className="max-w-3xl mx-auto relative">
+            <div className="h-full px-8 py-4 overflow-y-auto" onClick={() => textareaRef.current?.focus()}>
+                <div className="max-w-3xl mx-auto relative min-h-[80vh]">
                     <textarea
-                        className="w-full min-h-[80vh] resize-none bg-transparent border-none focus:outline-none font-mono text-transparent caret-slate-400 relative z-10"
+                        ref={textareaRef}
+                        className="w-full min-h-[80vh] resize-none bg-transparent border-none focus:outline-none font-mono caret-slate-200 relative z-10"
                         style={{
                             fontSize: '16px',
                             lineHeight: '24px',
                             padding: '0',
                             margin: '0',
                             border: 'none',
-                            outline: 'none'
+                            outline: 'none',
+                            color: 'transparent',
+                            WebkitTextFillColor: 'transparent',
+                            ...dynamicStyle
                         }}
                         placeholder=""
                         value={content}
-                        onChange={(e) => onChange(e.target.value)}
+                        onChange={(e) => {
+                            onChange(e.target.value);
+                            setCursorPos(e.target.selectionStart);
+                        }}
+                        onSelect={(e) => setCursorPos(e.currentTarget.selectionStart)}
+                        onKeyUp={(e) => setCursorPos(e.currentTarget.selectionStart)}
                         onKeyDown={handleScreenplayKeyDown}
                         spellCheck={true}
                     />

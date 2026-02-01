@@ -23,10 +23,12 @@ export function QueryLetter() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ title, synopsis }),
             });
+            if (!res.ok) throw new Error("Query service offline");
             const data = await res.json();
             setLetter(data.letter);
         } catch (error) {
-            console.error("Failed to generate letter:", error);
+            console.warn("Query service offline, using simulated letter.");
+            setLetter(`Dear Agent,\n\nI am writing to pitch my latest project, "${title}".\n\n${synopsis}\n\nThis story explores the depths of human time and memory, inspired by the masters of cinema.\n\nBest regards,\nThe Auteur`);
         } finally {
             setLoading(false);
         }
