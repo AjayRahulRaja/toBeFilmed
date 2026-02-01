@@ -1,7 +1,12 @@
 "use client";
 
 import { Textarea } from "@/components/ui/textarea";
-import { KeyboardEvent } from "react";
+import { KeyboardEvent, useEffect } from "react";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import TextAlign from "@tiptap/extension-text-align";
+import Underline from "@tiptap/extension-underline";
+import { NovelToolbar } from "@/components/novel-toolbar";
 
 interface EditorPanelProps {
     mode: string;
@@ -12,6 +17,34 @@ interface EditorPanelProps {
 export function EditorPanel({ mode, content, onChange }: EditorPanelProps) {
     const isNovel = mode === "novel";
     const isScreenplay = mode === "screenplay";
+
+    // Tiptap editor for Novel mode
+    const editor = useEditor({
+        extensions: [
+            StarterKit,
+            TextAlign.configure({
+                types: ["heading", "paragraph"],
+            }),
+            Underline,
+        ],
+        content: content || "",
+        immediatelyRender: false, // Required for Next.js SSR
+        editorProps: {
+            attributes: {
+                class: "prose prose-invert max-w-none focus:outline-none min-h-[80vh] text-lg leading-loose",
+            },
+        },
+        onUpdate: ({ editor }) => {
+            onChange(editor.getHTML());
+        },
+    });
+
+    // Sync content when it changes externally
+    useEffect(() => {
+        if (editor && isNovel && content !== editor.getHTML()) {
+            editor.commands.setContent(content);
+        }
+    }, [content, editor, isNovel]);
 
     const handleScreenplayKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === "Enter" && !e.shiftKey) {
@@ -44,8 +77,29 @@ export function EditorPanel({ mode, content, onChange }: EditorPanelProps) {
                 return;
             }
 
-            // After Dialogue ($) -> Keep Dialogue ($)
+            // After Dialogue ($) -> Keep Dialogue ($) OR if blank -> Action
             if (currentLine.trim().startsWith('$')) {
+                e.preventDefault();
+                // If dialogue line is blank (just $ or $ with whitespace), go to Action
+                if (currentLine.trim() === '$') {
+                    const newContent = content.substring(0, cursorPos) + '\n\n' + content.substring(cursorPos);
+                    onChange(newContent);
+                    setTimeout(() => {
+                        textarea.selectionStart = textarea.selectionEnd = cursorPos + 2;
+                    }, 0);
+                } else {
+                    // Continue with dialogue
+                    const newContent = content.substring(0, cursorPos) + '\n$' + content.substring(cursorPos);
+                    onChange(newContent);
+                    setTimeout(() => {
+                        textarea.selectionStart = textarea.selectionEnd = cursorPos + 2;
+                    }, 0);
+                }
+                return;
+            }
+
+            // After Parenthetical -> Dialogue ($)
+            if (trimmed.startsWith('(') && trimmed.endsWith(')')) {
                 e.preventDefault();
                 const newContent = content.substring(0, cursorPos) + '\n$' + content.substring(cursorPos);
                 onChange(newContent);
@@ -166,16 +220,16 @@ export function EditorPanel({ mode, content, onChange }: EditorPanelProps) {
         );
     }
 
-    // Novel mode
+    // Novel mode with Tiptap
     return (
-        <div className="h-full p-12 max-w-4xl mx-auto">
-            <Textarea
-                className="w-full h-full min-h-[80vh] resize-none bg-transparent border-none focus-visible:ring-0 text-lg leading-loose font-serif text-slate-200 placeholder:text-slate-700"
-                placeholder="Chapter 1&#10;&#10;Start writing your story..."
-                value={content}
-                onChange={(e) => onChange(e.target.value)}
-                spellCheck={true}
-            />
+        <div className="h-full flex flex-col">
+            <NovelToolbar editor={editor} />
+            <div className="flex-1 p-12 max-w-4xl mx-auto overflow-y-auto w-full">
+                <EditorContent
+                    editor={editor}
+                    className="w-full h-full prose-slate prose-headings:text-slate-100 prose-p:text-slate-200 prose-strong:text-slate-100 prose-em:text-slate-300"
+                />
+            </div>
         </div>
     );
 }
