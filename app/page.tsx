@@ -32,9 +32,9 @@ export default function Home() {
       {/* Cinematic Background Layer */}
       <div className="fixed inset-0 z-0">
         <BackgroundMarquee />
-        {/* Multi-layered overlays for depth (Villeneuve style) - Maximum visibility boost (+20% more transparent) */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/5 to-black/60" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/40" />
+        {/* Multi-layered overlays for depth (Villeneuve style) - Increased visibility (+10%) */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/5 to-black/50" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30" />
 
         {/* Animated Film Grain Overlay */}
         <div className="absolute inset-0 opacity-[0.06] pointer-events-none mix-blend-overlay animate-flicker bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
@@ -77,7 +77,7 @@ export default function Home() {
               className="h-[0.5px] bg-white/20"
             />
             <p className="text-[10px] md:text-xs tracking-[1em] uppercase font-light text-slate-500 pl-[1em] font-sans">
-              Directing The Immaterial
+              Keep Writing Until It Is Made
             </p>
           </div>
         </motion.div>
@@ -101,7 +101,7 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/5 w-full max-w-7xl relative overflow-hidden ring-1 ring-white/10 group/grid mt-20">
 
           {/* Screenplay */}
-          <Link href="/synopsis?mode=screenplay" className="group relative bg-[#0a0a0a]/80 backdrop-blur-sm overflow-hidden p-16 md:p-24 transition-all duration-1000">
+          <Link href="/synopsis?mode=screenplay" className="group relative bg-[#0a0a0a]/80 backdrop-blur-sm overflow-hidden p-16 md:p-24 transition-all duration-1000 hover:shadow-[0_0_40px_rgba(99,102,241,0.15)] hover:ring-1 hover:ring-indigo-500/20">
             <div className="absolute inset-0 bg-indigo-500/0 group-hover:bg-indigo-500/5 transition-colors duration-1000" />
             <div className="relative z-10 flex flex-col items-center text-center">
               <Film className="w-6 h-6 text-indigo-400/40 mb-12 group-hover:text-indigo-400 group-hover:rotate-12 transition-all duration-1000" />
@@ -117,7 +117,7 @@ export default function Home() {
           </Link>
 
           {/* Novel */}
-          <Link href="/synopsis?mode=novel" className="group relative bg-[#0a0a0a]/80 backdrop-blur-sm overflow-hidden p-16 md:p-24 transition-all duration-1000">
+          <Link href="/synopsis?mode=novel" className="group relative bg-[#0a0a0a]/80 backdrop-blur-sm overflow-hidden p-16 md:p-24 transition-all duration-1000 hover:shadow-[0_0_40px_rgba(244,63,94,0.15)] hover:ring-1 hover:ring-rose-500/20">
             <div className="absolute inset-0 bg-rose-600/0 group-hover:bg-rose-600/5 transition-colors duration-1000" />
             <div className="relative z-10 flex flex-col items-center text-center">
               <BookOpen className="w-6 h-6 text-rose-400/40 mb-12 group-hover:text-rose-400 group-hover:-rotate-12 transition-all duration-1000" />
@@ -145,7 +145,7 @@ export default function Home() {
               <span className="text-[10px] tracking-[0.6em] uppercase font-bold text-white/40 italic font-sans">The Vision</span>
             </div>
             <p className="text-[14px] text-slate-500 max-w-2xl font-light leading-loose tracking-[0.05em] font-sans">
-              ToBeFilmed is the definitive workspace for modern storytellers. From the geometry of a perfectly structured screenplay to the poetic weight of a novel's manuscript, we provide the architectural tools to analyze, visualize, and perfect your vision before the first frame is ever captured.
+              ToBeFilmed is a place where one should enter to start writing with an idea in mind of how this would look on the big screen. Every word has to be unique, creative, and authentic. AI is a tool here to support us in keeping our work uninfluenced by others, including AI.
             </p>
           </div>
 
@@ -159,13 +159,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="mt-40 text-center">
-          <div className="inline-block px-12 py-4 border border-white/5 rounded-full backdrop-blur-sm grayscale opacity-30 hover:opacity-100 hover:grayscale-0 transition-all duration-1000 group cursor-default font-sans">
-            <div className="text-[8px] tracking-[2em] uppercase text-slate-500 pl-[2em] group-hover:text-white transition-colors font-sans">
-              Symmetry • Duration • Light • Mystery
-            </div>
-          </div>
-        </div>
+
       </footer>
     </main>
   );
