@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { BackgroundMarquee } from "@/components/background-marquee";
+import { CinematicCursor } from "@/components/cinematic-cursor";
 import { motion } from "framer-motion";
 import { Film, BookOpen, ArrowRight, Camera, Scissors, Sparkles, Clapperboard } from "lucide-react";
 
@@ -101,7 +102,7 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-7xl mt-20">
 
           {/* Screenplay - Film Strip Design */}
-          <Link href="/synopsis?mode=screenplay" className="group relative bg-gradient-to-br from-blue-950/40 via-black/60 to-black/80 backdrop-blur-md overflow-hidden transition-all duration-700 hover:scale-[1.02] hover:shadow-[0_0_80px_rgba(37,99,235,0.4)] border-2 border-blue-900/20 hover:border-blue-600/60">
+          <Link href="/synopsis?mode=screenplay" className="group relative bg-gradient-to-br from-blue-950/40 via-black/60 to-black/80 backdrop-blur-md overflow-hidden transition-all duration-700 hover:scale-[1.02] hover:shadow-[0_0_80px_rgba(37,99,235,0.4)] border-2 border-blue-900/20 hover:border-blue-600/60 cursor-none">
             {/* Film Strip Perforations */}
             <div className="absolute left-0 top-0 bottom-0 w-3 bg-gradient-to-b from-blue-900/30 to-transparent">
               <div className="flex flex-col gap-4 py-4">
@@ -132,9 +133,8 @@ export default function Home() {
             </div>
           </Link>
 
-          {/* Novel - Manuscript Design */}
           {/* Novel - Vintage Manuscript Paper */}
-          <Link href="/synopsis?mode=novel" className="group relative bg-[#181515] overflow-hidden transition-all duration-700 hover:scale-[1.02] hover:shadow-[0_0_80px_rgba(220,38,38,0.3)]">
+          <Link href="/synopsis?mode=novel" className="group relative bg-[#181515] overflow-hidden transition-all duration-700 hover:scale-[1.02] hover:shadow-[0_0_80px_rgba(220,38,38,0.3)] cursor-none">
 
             {/* Deckled Edge Paper Texture */}
             <div className="absolute inset-4 border border-white/5 bg-[#1c1917] shadow-inner">
@@ -195,6 +195,9 @@ export default function Home() {
 
 
       </footer>
+
+      {/* Custom Interaction Layer */}
+      <CinematicCursor />
     </main>
   );
 }
