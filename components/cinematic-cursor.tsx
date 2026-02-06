@@ -7,6 +7,7 @@ export const CinematicCursor = () => {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [cursorType, setCursorType] = useState<"default" | "screenplay" | "novel">("default");
     const [isClicking, setIsClicking] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
         const updateMousePosition = (e: MouseEvent) => {
@@ -46,7 +47,13 @@ export const CinematicCursor = () => {
         };
     }, []);
 
-    if (cursorType === "default") return null;
+    useEffect(() => {
+        if (cursorType !== "default") {
+            setIsVisible(true);
+        } else {
+            setIsVisible(false);
+        }
+    }, [cursorType]);
 
     return (
         <motion.div
@@ -54,42 +61,52 @@ export const CinematicCursor = () => {
             animate={{
                 x: mousePosition.x,
                 y: mousePosition.y,
-                scale: isClicking ? 0.9 : 1
+                scale: isClicking ? 0.9 : 1,
+                opacity: isVisible ? 1 : 0
             }}
-            transition={{ type: "spring", stiffness: 800, damping: 35, mass: 0.5 }}
+            transition={{
+                type: "spring", stiffness: 1000, damping: 50, mass: 0.2, // Ultra responsive tracking
+                opacity: { duration: 0.2 }
+            }}
         >
             <AnimatePresence mode="wait">
                 {cursorType === "screenplay" && (
                     <motion.div
                         key="screenplay-cursor"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        transition={{ duration: 0.2 }}
-                        className="relative -top-3 -left-3"
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.8, opacity: 0 }}
+                        transition={{ duration: 0.15 }}
+                        className="relative -top-6 -left-6" // Centered offset
                     >
-                        {/* Realistic Clapboard Icon */}
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            {/* Bottom Board */}
-                            <path d="M4 12H20V20H4V12Z" fill="white" stroke="black" strokeWidth="1.5" strokeLinejoin="round" />
-                            <path d="M4 20H20" stroke="black" strokeWidth="1.5" />
+                        {/* Realistic Solid Clapboard Icon */}
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g filter="url(#shadow)">
+                                {/* Main Board - Solid White */}
+                                <rect x="3" y="11" width="18" height="10" rx="1" fill="white" />
 
-                            {/* The Clapper (Top Arm) - Pivots from left */}
-                            <motion.g
-                                style={{ originX: "4px", originY: "12px" }}
-                                animate={{ rotate: isClicking ? 0 : -20 }}
-                                transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                            >
-                                {/* Arm Shape */}
-                                <path d="M4 4L20 4V12H4V4Z" fill="white" stroke="black" strokeWidth="1.5" strokeLinejoin="round" />
-                                {/* Stripes on Arm */}
-                                <path d="M7 4L4 12" stroke="black" strokeWidth="1.5" />
-                                <path d="M12 4L9 12" stroke="black" strokeWidth="1.5" />
-                                <path d="M17 4L14 12" stroke="black" strokeWidth="1.5" />
-                            </motion.g>
+                                {/* The Clapper (Top Arm) - Solid White with Angled Stripes */}
+                                <motion.g
+                                    style={{ originX: "3px", originY: "11px" }}
+                                    animate={{ rotate: isClicking ? 0 : -25 }}
+                                    transition={{ type: "spring", stiffness: 500, damping: 20 }}
+                                >
+                                    <path d="M3 4L21 4V10H3V4Z" fill="white" />
+                                    {/* Black Stripes */}
+                                    <path d="M7 4L4 10H8L11 4H7Z" fill="black" />
+                                    <path d="M13 4L10 10H14L17 4H13Z" fill="black" />
+                                </motion.g>
 
-                            {/* Hinge */}
-                            <circle cx="4" cy="12" r="1.5" fill="black" />
+                                {/* Hinge Detail */}
+                                <rect x="3" y="10" width="18" height="1" fill="black" fillOpacity="0.2" />
+                            </g>
+
+                            {/* SVG Shadow Def */}
+                            <defs>
+                                <filter id="shadow" x="0" y="0" width="24" height="24" filterUnits="userSpaceOnUse">
+                                    <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="rgba(0,0,0,0.3)" />
+                                </filter>
+                            </defs>
                         </svg>
                     </motion.div>
                 )}
@@ -97,26 +114,28 @@ export const CinematicCursor = () => {
                 {cursorType === "novel" && (
                     <motion.div
                         key="novel-cursor"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        transition={{ duration: 0.2 }}
-                        className="relative -top-4 -left-4"
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.8, opacity: 0 }}
+                        transition={{ duration: 0.15 }}
+                        className="relative -top-8 -left-1"
                     >
-                        {/* Fountain Pen Nib SVG */}
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" className="drop-shadow-lg">
-                            <path d="M12 2L15.5 11L12 22L8.5 11L12 2Z" fill="white" stroke="black" strokeWidth="1.5" strokeLinejoin="round" />
-                            <path d="M12 2V11" stroke="black" strokeWidth="1" />
-                            <circle cx="12" cy="11" r="1" fill="black" />
+                        {/* Fountain Pen Nib SVG - Refined */}
+                        <svg width="56" height="56" viewBox="0 0 24 24" fill="none" className="drop-shadow-xl">
+                            <path d="M12 2C13.5 6 16.5 10 16.5 12C16.5 14.5 14.5 16.5 12 16.5C9.5 16.5 7.5 14.5 7.5 12C7.5 10 10.5 6 12 2Z" fill="white" stroke="black" strokeWidth="0.5" />
+                            <path d="M12 9V16" stroke="black" strokeWidth="1" strokeLinecap="round" />
+                            <circle cx="12" cy="13" r="0.5" fill="black" />
+                            {/* Handle hint */}
+                            <path d="M12 2L12 0" stroke="white" strokeWidth="4" />
                         </svg>
 
                         {/* Ink Blot Animation */}
                         {isClicking && (
                             <motion.div
                                 initial={{ scale: 0, opacity: 0.8 }}
-                                animate={{ scale: 1.5, opacity: 0 }}
-                                transition={{ duration: 0.4 }}
-                                className="absolute top-[38px] left-[18px] w-2 h-2 bg-black rounded-full"
+                                animate={{ scale: 2, opacity: 0 }}
+                                transition={{ duration: 0.5 }}
+                                className="absolute top-[42px] left-[28px] -translate-x-1/2 w-3 h-3 bg-black rounded-full mix-blend-multiply"
                             />
                         )}
                     </motion.div>
