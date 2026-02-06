@@ -32,9 +32,9 @@ export default function Home() {
       {/* Cinematic Background Layer */}
       <div className="fixed inset-0 z-0">
         <BackgroundMarquee />
-        {/* Multi-layered overlays for depth (Villeneuve style) - Increased visibility (+10%) */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/5 to-black/50" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30" />
+        {/* Multi-layered overlays for depth (Villeneuve style) - Maximum visibility (+30% total) */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/5 to-black/30" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/20" />
 
         {/* Animated Film Grain Overlay */}
         <div className="absolute inset-0 opacity-[0.06] pointer-events-none mix-blend-overlay animate-flicker bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
@@ -97,38 +97,70 @@ export default function Home() {
           </span>
         </motion.div>
 
-        {/* The Split Screen */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/5 w-full max-w-7xl relative overflow-hidden ring-1 ring-white/10 group/grid mt-20">
+        {/* The Split Screen - Redesigned Cinematic Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-7xl mt-20">
 
-          {/* Screenplay */}
-          <Link href="/synopsis?mode=screenplay" className="group relative bg-[#0a0a0a]/80 backdrop-blur-sm overflow-hidden p-16 md:p-24 transition-all duration-1000 hover:shadow-[0_0_40px_rgba(99,102,241,0.15)] hover:ring-1 hover:ring-indigo-500/20">
-            <div className="absolute inset-0 bg-indigo-500/0 group-hover:bg-indigo-500/5 transition-colors duration-1000" />
-            <div className="relative z-10 flex flex-col items-center text-center">
-              <Film className="w-6 h-6 text-indigo-400/40 mb-12 group-hover:text-indigo-400 group-hover:rotate-12 transition-all duration-1000" />
-              <h2 className="text-5xl font-medium mb-6 text-white font-cormorant tracking-tight group-hover:tracking-widest transition-all duration-1000">Screenplay</h2>
-              <p className="text-xs text-slate-500 font-light leading-[2] tracking-[0.1em] mb-12 max-w-xs group-hover:text-slate-300 transition-all duration-1000 font-sans">
-                Constructing the geometry of sight and sound. <br />
-                <span className="text-[10px] uppercase text-slate-700 block mt-4 font-sans">Structural Analysis • 24fps</span>
-              </p>
-              <div className="text-[9px] tracking-[0.4em] uppercase text-indigo-400/50 group-hover:text-indigo-400 transition-all duration-1000 flex items-center gap-4 font-sans">
-                [ Initiation ] <ArrowRight className="w-3 h-3" />
+          {/* Screenplay - Film Strip Design */}
+          <Link href="/synopsis?mode=screenplay" className="group relative bg-gradient-to-br from-blue-950/40 via-black/60 to-black/80 backdrop-blur-md overflow-hidden transition-all duration-700 hover:scale-[1.02] hover:shadow-[0_0_80px_rgba(37,99,235,0.4)] border-2 border-blue-900/20 hover:border-blue-600/60">
+            {/* Film Strip Perforations */}
+            <div className="absolute left-0 top-0 bottom-0 w-3 bg-gradient-to-b from-blue-900/30 to-transparent">
+              <div className="flex flex-col gap-4 py-4">
+                {[...Array(12)].map((_, i) => (
+                  <div key={i} className="w-2 h-2 mx-auto rounded-sm bg-blue-800/40" />
+                ))}
               </div>
+            </div>
+            <div className="absolute right-0 top-0 bottom-0 w-3 bg-gradient-to-b from-blue-900/30 to-transparent">
+              <div className="flex flex-col gap-4 py-4">
+                {[...Array(12)].map((_, i) => (
+                  <div key={i} className="w-2 h-2 mx-auto rounded-sm bg-blue-800/40" />
+                ))}
+              </div>
+            </div>
+
+            {/* Anamorphic Letterbox Effect */}
+            <div className="absolute inset-0 bg-blue-600/0 group-hover:bg-blue-600/10 transition-all duration-700" />
+
+            <div className="relative z-10 flex flex-col items-center justify-center text-center py-32 px-20">
+              <Film className="w-12 h-12 text-blue-500/60 mb-10 group-hover:text-blue-400 group-hover:scale-110 transition-all duration-700 animate-pulse" />
+              <h2 className="text-6xl md:text-7xl font-bold mb-8 text-white font-cormorant tracking-tight group-hover:tracking-wide transition-all duration-700 drop-shadow-[0_0_30px_rgba(59,130,246,0.5)]">Screenplay</h2>
+              <div className="w-24 h-[2px] bg-gradient-to-r from-transparent via-blue-500/50 to-transparent mb-8 group-hover:w-40 transition-all duration-700" />
+              <p className="text-sm text-slate-400 font-light leading-relaxed tracking-wide max-w-md group-hover:text-slate-200 transition-all duration-700 font-sans">
+                Constructing the geometry of sight and sound
+              </p>
+              <span className="text-[10px] uppercase text-blue-600/60 block mt-6 tracking-[0.3em] font-sans group-hover:text-blue-400 transition-colors duration-700">24 Frames Per Second</span>
             </div>
           </Link>
 
-          {/* Novel */}
-          <Link href="/synopsis?mode=novel" className="group relative bg-[#0a0a0a]/80 backdrop-blur-sm overflow-hidden p-16 md:p-24 transition-all duration-1000 hover:shadow-[0_0_40px_rgba(244,63,94,0.15)] hover:ring-1 hover:ring-rose-500/20">
-            <div className="absolute inset-0 bg-rose-600/0 group-hover:bg-rose-600/5 transition-colors duration-1000" />
-            <div className="relative z-10 flex flex-col items-center text-center">
-              <BookOpen className="w-6 h-6 text-rose-400/40 mb-12 group-hover:text-rose-400 group-hover:-rotate-12 transition-all duration-1000" />
-              <h2 className="text-5xl font-medium mb-6 text-white font-cormorant tracking-tight group-hover:tracking-widest transition-all duration-1000">Novel</h2>
-              <p className="text-xs text-slate-500 font-light leading-[2] tracking-[0.1em] mb-12 max-w-xs group-hover:text-slate-300 transition-all duration-1000 font-sans">
-                Pursuing the weight of every silent letter. <br />
-                <span className="text-[10px] uppercase text-slate-700 block mt-4 font-sans">Pure Prose • Manuscript Flow</span>
-              </p>
-              <div className="text-[9px] tracking-[0.4em] uppercase text-rose-400/50 group-hover:text-rose-400 transition-all duration-1000 flex items-center gap-4 font-sans">
-                [ Composition ] <ArrowRight className="w-3 h-3" />
+          {/* Novel - Manuscript Design */}
+          <Link href="/synopsis?mode=novel" className="group relative bg-gradient-to-br from-red-950/40 via-black/60 to-black/80 backdrop-blur-md overflow-hidden transition-all duration-700 hover:scale-[1.02] hover:shadow-[0_0_80px_rgba(220,38,38,0.4)] border-2 border-red-900/20 hover:border-red-600/60">
+            {/* Manuscript Edge Effect */}
+            <div className="absolute left-0 top-0 bottom-0 w-3 bg-gradient-to-b from-red-900/30 to-transparent">
+              <div className="flex flex-col gap-4 py-4">
+                {[...Array(12)].map((_, i) => (
+                  <div key={i} className="w-2 h-2 mx-auto rounded-sm bg-red-800/40" />
+                ))}
               </div>
+            </div>
+            <div className="absolute right-0 top-0 bottom-0 w-3 bg-gradient-to-b from-red-900/30 to-transparent">
+              <div className="flex flex-col gap-4 py-4">
+                {[...Array(12)].map((_, i) => (
+                  <div key={i} className="w-2 h-2 mx-auto rounded-sm bg-red-800/40" />
+                ))}
+              </div>
+            </div>
+
+            {/* Literary Glow Effect */}
+            <div className="absolute inset-0 bg-red-600/0 group-hover:bg-red-600/10 transition-all duration-700" />
+
+            <div className="relative z-10 flex flex-col items-center justify-center text-center py-32 px-20">
+              <BookOpen className="w-12 h-12 text-red-500/60 mb-10 group-hover:text-red-400 group-hover:scale-110 transition-all duration-700 animate-pulse" />
+              <h2 className="text-6xl md:text-7xl font-bold mb-8 text-white font-cormorant tracking-tight group-hover:tracking-wide transition-all duration-700 drop-shadow-[0_0_30px_rgba(239,68,68,0.5)]">Novel</h2>
+              <div className="w-24 h-[2px] bg-gradient-to-r from-transparent via-red-500/50 to-transparent mb-8 group-hover:w-40 transition-all duration-700" />
+              <p className="text-sm text-slate-400 font-light leading-relaxed tracking-wide max-w-md group-hover:text-slate-200 transition-all duration-700 font-sans">
+                Pursuing the weight of every silent letter
+              </p>
+              <span className="text-[10px] uppercase text-red-600/60 block mt-6 tracking-[0.3em] font-sans group-hover:text-red-400 transition-colors duration-700">Pure Prose</span>
             </div>
           </Link>
         </div>
