@@ -133,34 +133,36 @@ export default function Home() {
           </Link>
 
           {/* Novel - Manuscript Design */}
-          <Link href="/synopsis?mode=novel" className="group relative bg-gradient-to-br from-red-950/40 via-black/60 to-black/80 backdrop-blur-md overflow-hidden transition-all duration-700 hover:scale-[1.02] hover:shadow-[0_0_80px_rgba(220,38,38,0.4)] border-2 border-red-900/20 hover:border-red-600/60">
-            {/* Manuscript Edge Effect */}
-            <div className="absolute left-0 top-0 bottom-0 w-3 bg-gradient-to-b from-red-900/30 to-transparent">
-              <div className="flex flex-col gap-4 py-4">
-                {[...Array(12)].map((_, i) => (
-                  <div key={i} className="w-2 h-2 mx-auto rounded-sm bg-red-800/40" />
-                ))}
-              </div>
-            </div>
-            <div className="absolute right-0 top-0 bottom-0 w-3 bg-gradient-to-b from-red-900/30 to-transparent">
-              <div className="flex flex-col gap-4 py-4">
-                {[...Array(12)].map((_, i) => (
-                  <div key={i} className="w-2 h-2 mx-auto rounded-sm bg-red-800/40" />
-                ))}
-              </div>
+          {/* Novel - Vintage Manuscript Paper */}
+          <Link href="/synopsis?mode=novel" className="group relative bg-[#181515] overflow-hidden transition-all duration-700 hover:scale-[1.02] hover:shadow-[0_0_80px_rgba(220,38,38,0.3)]">
+
+            {/* Deckled Edge Paper Texture */}
+            <div className="absolute inset-4 border border-white/5 bg-[#1c1917] shadow-inner">
+              {/* Subtle Ruling Lines */}
+              <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_31px,rgba(255,255,255,0.03)_32px)] bg-[size:100%_32px]" />
+              {/* Vertical Margin Line */}
+              <div className="absolute left-16 top-0 bottom-0 w-[1px] bg-red-900/20" />
             </div>
 
-            {/* Literary Glow Effect */}
-            <div className="absolute inset-0 bg-red-600/0 group-hover:bg-red-600/10 transition-all duration-700" />
+            {/* Paper Texture Overlay */}
+            <div className="absolute inset-0 opacity-[0.2] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay" />
 
             <div className="relative z-10 flex flex-col items-center justify-center text-center py-32 px-20">
-              <BookOpen className="w-12 h-12 text-red-500/60 mb-10 group-hover:text-red-400 group-hover:scale-110 transition-all duration-700 animate-pulse" />
-              <h2 className="text-6xl md:text-7xl font-bold mb-8 text-white font-cormorant tracking-tight group-hover:tracking-wide transition-all duration-700 drop-shadow-[0_0_30px_rgba(239,68,68,0.5)]">Novel</h2>
-              <div className="w-24 h-[2px] bg-gradient-to-r from-transparent via-red-500/50 to-transparent mb-8 group-hover:w-40 transition-all duration-700" />
-              <p className="text-sm text-slate-400 font-light leading-relaxed tracking-wide max-w-md group-hover:text-slate-200 transition-all duration-700 font-sans">
+              <div className="mb-10 relative">
+                <BookOpen className="w-12 h-12 text-rose-300/40 group-hover:text-rose-400 group-hover:scale-110 transition-all duration-700" />
+                <div className="absolute -inset-4 bg-rose-500/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+
+              <h2 className="text-6xl md:text-7xl font-bold mb-8 text-[#e7e5e4] font-cormorant tracking-tight group-hover:tracking-wide transition-all duration-700 drop-shadow-lg italic">Novel</h2>
+
+              {/* Decorative Ink Divider */}
+              <div className="w-32 h-[1px] bg-gradient-to-r from-transparent via-rose-900/60 to-transparent mb-8 group-hover:w-48 transition-all duration-700" />
+
+              <p className="text-sm text-stone-400 font-serif italic leading-relaxed tracking-wide max-w-md group-hover:text-stone-300 transition-all duration-700">
                 Pursuing the weight of every silent letter
               </p>
-              <span className="text-[10px] uppercase text-red-600/60 block mt-6 tracking-[0.3em] font-sans group-hover:text-red-400 transition-colors duration-700">Pure Prose</span>
+
+              <span className="text-[10px] uppercase text-rose-900/60 block mt-6 tracking-[0.3em] font-sans font-bold">First Draft • Typewriter</span>
             </div>
           </Link>
         </div>
