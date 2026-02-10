@@ -1,22 +1,31 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
 
 export const CinematicCursor = () => {
-    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    // Use MotionValues for direct DOM updates (bypassing React render cycle for performance)
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
+
+    // Smooth spring physics for the cursor movement
+    const springConfig = { damping: 20, stiffness: 300, mass: 0.1 }; // Adjusted for "smooth but snappy" feel
+    const smoothX = useSpring(mouseX, springConfig);
+    const smoothY = useSpring(mouseY, springConfig);
+
     const [cursorType, setCursorType] = useState<"default" | "screenplay" | "novel">("default");
     const [isClicking, setIsClicking] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
         const updateMousePosition = (e: MouseEvent) => {
-            setMousePosition({ x: e.clientX, y: e.clientY });
+            // Update MotionValues directly
+            mouseX.set(e.clientX);
+            mouseY.set(e.clientY);
         };
 
         const handleMouseOver = (e: MouseEvent) => {
             const target = e.target as HTMLElement;
-            // Check if hovering over Screenplay or Novel cards (using href or parent/closest check)
             const link = target.closest("a");
             if (link) {
                 if (link.getAttribute("href")?.includes("mode=screenplay")) {
@@ -45,36 +54,38 @@ export const CinematicCursor = () => {
             window.removeEventListener("mousedown", handleMouseDown);
             window.removeEventListener("mouseup", handleMouseUp);
         };
-    }, []);
+    }, [mouseX, mouseY]);
 
     useEffect(() => {
-        if (cursorType !== "default") {
-            setIsVisible(true);
-        } else {
-            setIsVisible(false);
-        }
+        setIsVisible(cursorType !== "default");
     }, [cursorType]);
 
     return (
         <motion.div
             className="fixed top-0 left-0 z-50 pointer-events-none drop-shadow-2xl"
+            style={{
+                x: smoothX,
+                y: smoothY,
+            }}
             animate={{
-                x: mousePosition.x,
-                y: mousePosition.y,
                 scale: isClicking ? 0.9 : 1,
                 opacity: isVisible ? 1 : 0,
             }}
             transition={{
-                type: "spring",
-                stiffness: 1200, // Extremely stiff to minimize tracking lag
-                damping: 50,
-                mass: 0.1,
-                opacity: { duration: 0.1 } // Almost instant fade in
+                scale: { type: "spring", stiffness: 400, damping: 25 },
+                opacity: { duration: 0.15 } // slightly smoother fade
             }}
         >
             <AnimatePresence mode="wait">
                 {cursorType === "screenplay" && (
-                    <div className="relative -top-5 -left-5"> {/* Centering adjustment */}
+                    <motion.div
+                        key="screenplay-cursor"
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.8, opacity: 0 }}
+                        transition={{ duration: 0.15 }}
+                        className="relative -top-5 -left-5"
+                    >
                         {/* User Requested: Outline Clapboard with Play Button */}
                         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]">
                             {/* Bottom Board Area */}
@@ -106,11 +117,18 @@ export const CinematicCursor = () => {
                             {/* Bottom Hinge Dot */}
                             <circle cx="4" cy="14" r="1" fill="white" stroke="none" />
                         </svg>
-                    </div>
+                    </motion.div>
                 )}
 
                 {cursorType === "novel" && (
-                    <div className="relative -top-6 -left-1">
+                    <motion.div
+                        key="novel-cursor"
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.8, opacity: 0 }}
+                        transition={{ duration: 0.15 }}
+                        className="relative -top-6 -left-1"
+                    >
                         {/* Fountain Pen Nib SVG - Matching Outline Style */}
                         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]">
                             <path d="M12 19l7-7 3 3-7 7-3-3z" stroke="none" /> {/* Optional body fill */}
@@ -128,7 +146,7 @@ export const CinematicCursor = () => {
                                 className="absolute top-[38px] left-[10px] w-2 h-2 bg-white rounded-full"
                             />
                         )}
-                    </div>
+                    </motion.div>
                 )}
             </AnimatePresence>
         </motion.div>
