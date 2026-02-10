@@ -84,10 +84,10 @@ export const CinematicCursor = () => {
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.8, opacity: 0 }}
                         transition={{ duration: 0.15 }}
-                        className="relative -top-5 -left-5"
+                        className="relative -top-4 -left-4"
                     >
                         {/* User Requested: Outline Clapboard with Play Button */}
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]">
                             {/* Bottom Board Area */}
                             <path d="M4 12h16a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2z" fill="white" fillOpacity="0.1" />
                             <path d="M4 12h16a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2z" stroke="white" />
@@ -127,10 +127,10 @@ export const CinematicCursor = () => {
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.8, opacity: 0 }}
                         transition={{ duration: 0.15 }}
-                        className="relative -top-6 -left-1"
+                        className="relative -top-4 -left-1"
                     >
                         {/* Fountain Pen Nib SVG - Matching Outline Style */}
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]">
                             <path d="M12 19l7-7 3 3-7 7-3-3z" stroke="none" /> {/* Optional body fill */}
                             <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" stroke="white" />
                             <path d="M2 2l7.586 7.586" stroke="white" />
@@ -143,7 +143,7 @@ export const CinematicCursor = () => {
                                 initial={{ scale: 0, opacity: 1 }}
                                 animate={{ scale: 2, opacity: 0 }}
                                 transition={{ duration: 0.5 }}
-                                className="absolute top-[38px] left-[10px] w-2 h-2 bg-white rounded-full"
+                                className="absolute top-[28px] left-[8px] w-2 h-2 bg-white rounded-full"
                             />
                         )}
                     </motion.div>
